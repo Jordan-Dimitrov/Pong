@@ -43,6 +43,22 @@ namespace Mono
 
         protected override void Update(GameTime gameTime)
         {
+            if (_transform.Y <= 0)
+            {
+                _transform.Y = 200;
+            }
+            else if (_transform1.Y <= 0)
+            {
+                _transform1.Y = 200;
+            }
+            else if (_transform.Y >= Window.ClientBounds.Height - 200)
+            {
+                _transform.Y = 200;
+            }
+            else if (_transform1.Y >= Window.ClientBounds.Height - 200)
+            {
+                _transform1.Y = 200;
+            }
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             if (Keyboard.GetState().IsKeyDown(Keys.W))
@@ -50,10 +66,9 @@ namespace Mono
             else if (Keyboard.GetState().IsKeyDown(Keys.S))
                 _transform.Y += 10;
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                _transform1.Y -= 10;
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 _transform1.Y += 10;
-            // TODO: Add your update logic 
+            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                _transform1.Y -= 10;
             base.Update(gameTime);
         }
 
@@ -64,8 +79,6 @@ namespace Mono
             _spriteBatch.Draw(_tex, _transform, Color.White);
             _spriteBatch.Draw(_tex, _transform1, Color.White);
             _spriteBatch.End();
-
-            // TODO: Add your drawing code here
             base.Draw(gameTime);
         }
     }
