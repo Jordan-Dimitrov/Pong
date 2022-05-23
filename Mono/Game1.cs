@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Mono
 {
@@ -14,6 +15,11 @@ namespace Mono
         private Rectangle _transform1;
         private Rectangle Ball;
         private bool IsLost = false;
+        private int speedX, speedY;
+        private Random rnd2 = new Random();
+        int RandX;
+
+
 
         public Game1()
         {
@@ -37,6 +43,9 @@ namespace Mono
             _tex.SetData(data);
             _transform = new Rectangle(0, 100, 50, 200);
             _transform1 = new Rectangle(750, 100, 50, 200);
+            Ball = new Rectangle(Window.ClientBounds.Width / 2, Window.ClientBounds.Height / 2, 20, 20);
+            RandX = rnd2.Next(0, 2);
+            speedX = RandX; speedY = 0;
             // TODO: use this.Content to load your game content 
             base.LoadContent();
         }
@@ -69,6 +78,7 @@ namespace Mono
                 _transform1.Y += 10;
             else if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 _transform1.Y -= 10;
+            BallDrawingMovementAndExit(_transform.X, _transform.Y, _transform1.X, _transform1.Y, 50, 200);
             base.Update(gameTime);
         }
 
@@ -79,6 +89,7 @@ namespace Mono
             _spriteBatch.Draw(_tex, _transform, Color.White);
             _spriteBatch.Draw(_tex, _transform1, Color.White);
             _spriteBatch.Draw(_tex, Ball, Color.White);
+            
             _spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -86,35 +97,54 @@ namespace Mono
        public void BallDrawingMovementAndExit (int xOfPaddle1, int yOfPaddle1, int xOfPaddle2, int yOfPaddle2, int width, int height)
         {
             IsLost = false;
-            Ball = new Rectangle(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2, 20, 20);
-            int speedX = 1,  speedY = 1;
-            Ball.X += speedX;
-            Ball.X += speedY;
+            var rnd = new Random();
+            
 
-            if (Ball.X <= xOfPaddle1 && Ball.Y >= yOfPaddle1 && Ball.Y <= yOfPaddle1 + height)
+            if (Ball.X <= xOfPaddle1 + width && Ball.Y + 20 >= yOfPaddle1 && Ball.Y <= yOfPaddle1 + height)
             {
-                speedX = 1;
+                Ball.X = xOfPaddle1 + width +  5;
+                speedX = 2;
+                int RandY = rnd.Next(0, 2);
+                Console.WriteLine(RandY);
+                if (RandY == 0)
+                    speedY = -2;
+                else
+                    speedY = 2;
             }
-            if (Ball.X >= xOfPaddle2 && Ball.Y >= yOfPaddle2 && Ball.Y <= yOfPaddle2 + height)
+            if (Ball.X + 20>= xOfPaddle2 && Ball.Y + 20 >= yOfPaddle2 && Ball.Y <= yOfPaddle2 + height)
             {
-                speedX = -1;
+                Ball.X = xOfPaddle2 - 25;
+                speedX = -2;
+                int RandY = rnd.Next(0, 2);
+                if (RandY == 0)
+                    speedY = -2;
+                else
+                    speedY = 2;
             }
 
             if (Ball.Y <= 0)
-            {
-                speedY = -1;
-            }
-            if (Ball.Y >= Window.ClientBounds.Y + height)
-            {
-                speedY = -1;
-            }
+                speedY = 2;
 
-            if (Ball.X <= 0 || Ball.X >= Window.ClientBounds.X + width)
-            {
+            if (Ball.Y + 20 >= Window.ClientBounds.Height)
+                speedY = -2;
+
+            if (Ball.X <= 0 || Ball.X >= Window.ClientBounds.Width - 20) {
                 IsLost = true;
-                
+                Ball.X = Window.ClientBounds.Width/2;
+                Ball.Y = Window.ClientBounds.Height / 2;
+
+                RandX = rnd2.Next(0, 2);
+                if (RandX == 0)
+                    speedX = -1;
+                else
+                    speedX = 1;
+
+                speedY = 0;
             }
-            
+                
+            Ball.X += speedX;
+            Ball.Y += speedY;
+
         }
     }
 }
