@@ -12,6 +12,8 @@ namespace Mono
         private Texture2D _tex;
         private Rectangle _transform;
         private Rectangle _transform1;
+        private Rectangle Ball;
+        private bool IsLost = false;
 
         public Game1()
         {
@@ -29,8 +31,6 @@ namespace Mono
 
         protected override void LoadContent()
         {
-            // 1111 1111
-            // 255 = ff
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _tex = new Texture2D(_graphics.GraphicsDevice, 1, 1);
             uint[] data = new uint[] { 0xffffffff };
@@ -78,8 +78,43 @@ namespace Mono
             _spriteBatch.Begin();
             _spriteBatch.Draw(_tex, _transform, Color.White);
             _spriteBatch.Draw(_tex, _transform1, Color.White);
+            _spriteBatch.Draw(_tex, Ball, Color.White);
             _spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+       public void BallDrawingMovementAndExit (int xOfPaddle1, int yOfPaddle1, int xOfPaddle2, int yOfPaddle2, int width, int height)
+        {
+            IsLost = false;
+            Ball = new Rectangle(Window.ClientBounds.X / 2, Window.ClientBounds.Y / 2, 20, 20);
+            int speedX = 1,  speedY = 1;
+            Ball.X += speedX;
+            Ball.X += speedY;
+
+            if (Ball.X <= xOfPaddle1 && Ball.Y >= yOfPaddle1 && Ball.Y <= yOfPaddle1 + height)
+            {
+                speedX = 1;
+            }
+            if (Ball.X >= xOfPaddle2 && Ball.Y >= yOfPaddle2 && Ball.Y <= yOfPaddle2 + height)
+            {
+                speedX = -1;
+            }
+
+            if (Ball.Y <= 0)
+            {
+                speedY = -1;
+            }
+            if (Ball.Y >= Window.ClientBounds.Y + height)
+            {
+                speedY = -1;
+            }
+
+            if (Ball.X <= 0 || Ball.X >= Window.ClientBounds.X + width)
+            {
+                IsLost = true;
+                
+            }
+            
         }
     }
 }
